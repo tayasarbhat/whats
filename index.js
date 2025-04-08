@@ -2,13 +2,33 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
 const path = require('path');
+const WebSocket = require('ws');
+const http = require('http');
 
 const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
 const WHATSAPP_API_URL = 'https://graph.facebook.com/v17.0/542227575631617/messages';
 const WHATSAPP_ACCESS_TOKEN = 'EAAQzFQxG0goBO4DZABL7PrPyIdmFxDbP3hFYQCiioiJZAo4P4JbABnGw1qmBzVJUerTHkZB2qZAfWdaos16NJUYmXIewPTmV90neQjceLWnycrhZBfayZAP5EHCYD4qwBDNAiMvdBz8gLj6pwjDCCCVVA2UasKMPgvFx5GGwXfIMBBCc0tOvOCvTc6VeNkgD5GyAZDZD';
+
+// WebSocket connection handling
+wss.on('connection', (ws) => {
+  console.log('New client connected');
+  ws.on('close', () => console.log('Client disconnected'));
+});
+
+// Broadcast to all connected clients
+const broadcast = (data) => {
+  wss.clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(data));
+    }
+  });
+};
 
 const sendWhatsAppWithFlow = async (recipientNumber) => {
   try {
@@ -90,6 +110,8 @@ app.get('/', (req, res) => {
 app.post('/webhook', (req, res) => {
   console.log('📥 Received webhook data:', JSON.stringify(req.body, null, 2));
   
+  let responseData = null;
+  
   if (req.body.entry && 
       req.body.entry[0].changes && 
       req.body.entry[0].changes[0].value.messages && 
@@ -97,6 +119,19 @@ app.post('/webhook', (req, res) => {
     
     const flowResponse = req.body.entry[0].changes[0].value.messages[0].interactive;
     console.log('🔍 Flow Response Data:', JSON.stringify(flowResponse, null, 2));
+    responseData = flowResponse;
+  } else if (req.body.entry && 
+             req.body.entry[0].changes && 
+             req.body.entry[0].changes[0].value.messages) {
+    // Handle regular messages
+    responseData = req.body.entry[0].changes[0].value.messages[0];
+  }
+
+  if (responseData) {
+    broadcast({
+      type: 'webhook',
+      data: responseData
+    });
   }
 
   res.status(200).send('OK');
@@ -122,6 +157,6 @@ app.get('/webhook', (req, res) => {
 
 // Start the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
