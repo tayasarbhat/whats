@@ -30,7 +30,7 @@ const broadcast = (data) => {
   });
 };
 
-const sendWhatsAppWithFlow = async (recipientNumber) => {
+const sendWhatsAppWithFlow = async (recipientNumber, parameters) => {
   try {
     console.log('🚀 Sending WhatsApp message...');
     
@@ -49,11 +49,10 @@ const sendWhatsAppWithFlow = async (recipientNumber) => {
             {
               type: 'body',
               parameters: [
-                { type: 'text', text: '+971 52 222 1220' },  // {{1}}
-                { type: 'text', text: '250' },             // {{2}}
-                { type: 'text', text: '50 GB Data + 500 Local Minutes.' },              // {{3}}
-                { type: 'text', text: '1' },             // {{4}}
-                
+                { type: 'text', text: parameters.param1 },  // {{1}}
+                { type: 'text', text: parameters.param2 },  // {{2}}
+                { type: 'text', text: parameters.param3 },  // {{3}}
+                { type: 'text', text: parameters.param4 },  // {{4}}
               ],
             },
             {
@@ -93,11 +92,11 @@ const sendWhatsAppWithFlow = async (recipientNumber) => {
 
 // API endpoint to send WhatsApp message
 app.post('/send-message', async (req, res) => {
-  const { phoneNumber } = req.body;
+  const { phoneNumber, parameters } = req.body;
   if (!phoneNumber) {
     return res.status(400).json({ success: false, error: 'Phone number is required' });
   }
-  const result = await sendWhatsAppWithFlow(phoneNumber);
+  const result = await sendWhatsAppWithFlow(phoneNumber, parameters);
   res.json(result);
 });
 
