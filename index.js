@@ -108,7 +108,7 @@ app.get('/webhook', (req, res) => {
   const token = req.query['hub.verify_token'];
   const challenge = req.query['hub.challenge'];
 
-  const VERIFY_TOKEN = "your_verify_token";
+  const VERIFY_TOKEN = process.env.VERIFY_TOKEN || "tayasar_secret";
 
   if (mode && token) {
     if (mode === 'subscribe' && token === VERIFY_TOKEN) {
