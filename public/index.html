@@ -4,140 +4,353 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WhatsApp Message Sender</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f0f2f5;
+        :root {
+            --primary-color: #25D366;
+            --primary-hover: #128C7E;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --border-color: #e1e1e1;
+            --success-color: #34D399;
+            --error-color: #EF4444;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --transition: all 0.3s ease;
         }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-        h1, h2 {
-            color: #1a73e8;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
-        button {
-            background-color: #25D366;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+            min-height: 100vh;
         }
-        button:hover {
-            background-color: #128C7E;
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
         }
-        .status {
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 4px;
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
         }
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        #responseLog {
-            max-height: 400px;
-            overflow-y: auto;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            border: 1px solid #dee2e6;
+
+        .header-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
         }
-        .response-entry {
-            padding: 15px;
-            margin-bottom: 15px;
-            background-color: white;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+        h1, h2 {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin: 0;
         }
-        .timestamp {
-            color: #6c757d;
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
             font-size: 0.875rem;
-            margin-bottom: 10px;
             font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
         }
+
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.1);
+        }
+
+        .parameters-section {
+            background-color: #f8f9fa;
+            border-radius: var(--radius-sm);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .parameters-section h3 {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            display: none;
+        }
+
+        .success {
+            background-color: rgba(52, 211, 153, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+
+        .error {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        #responseLog {
+            max-height: 500px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .response-entry {
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 1.25rem;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .response-entry:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .timestamp {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
         .message-type {
             display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.875rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
             font-weight: 500;
-            margin-bottom: 10px;
+            margin-bottom: 1rem;
         }
+
         .type-flow {
-            background-color: #e3f2fd;
-            color: #0d47a1;
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #3B82F6;
         }
+
         .type-text {
-            background-color: #e8f5e9;
-            color: #1b5e20;
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10B981;
         }
+
         .flow-response {
-            background-color: #fafafa;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 10px;
+            background-color: #f8fafc;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            margin-top: 0.75rem;
         }
+
         .flow-item {
-            margin: 5px 0;
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
         }
+
         .flow-item:last-child {
             border-bottom: none;
         }
+
         .sender {
             font-weight: 500;
-            color: #2196f3;
-            margin-bottom: 5px;
+            color: #3B82F6;
+            margin-bottom: 0.5rem;
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>WhatsApp Message Sender</h1>
-        <div class="form-group">
-            <label for="phoneNumber">Recipient's Phone Number:</label>
-            <input type="text" id="phoneNumber" placeholder="Enter phone number with country code (e.g., +919906686458)" />
-        </div>
-        <button onclick="sendMessage()">Send Message</button>
-        <div id="status" class="status" style="display: none;"></div>
-    </div>
+        <div class="card">
+            <div class="header">
+                <div class="header-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM16.59 7.58L10 14.17L7.41 11.59L6 13L10 17L18 9L16.59 7.58Z" fill="currentColor"/>
+                    </svg>
+                </div>
+                <h1>WhatsApp Verification </h1>
+            </div>
 
-    <div class="container">
-        <h2>Webhook Responses</h2>
-        <div id="responseLog"></div>
+            <div class="form-group">
+                <label for="phoneNumber">Recipient's Phone Number</label>
+                <input 
+                    type="text" 
+                    id="phoneNumber" 
+                    placeholder="Enter phone number with country code (e.g., +919906686458)" 
+                />
+            </div>
+            
+            <div class="parameters-section">
+                <h3>Message Parameters</h3>
+                <div class="form-group">
+                    <label for="param1">Phone Number </label>
+                    <input 
+                        type="text" 
+                        id="param1" 
+                      
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="param2">Amount </label>
+                    <input 
+                        type="text" 
+                        id="param2" 
+                        placeholder="e.g., 250" 
+                        value="250" 
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="param3">Package Details </label>
+                    <input 
+                        type="text" 
+                        id="param3" 
+                        placeholder="e.g., 50 GB Data + 500 Local Minutes" 
+                        value="50 GB Data + 500 Local Minutes." 
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="param4">Duration in Months </label>
+                    <input 
+                        type="text" 
+                        id="param4" 
+                        placeholder="e.g., 1" 
+                        value="1" 
+                    />
+                </div>
+            </div>
+
+            <button onclick="sendMessage()" id="sendButton">
+                Send Message
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.01 21L23 12L2.01 3L2 10L17 12L2 14L2.01 21Z" fill="currentColor"/>
+                </svg>
+            </button>
+            <div id="status" class="status"></div>
+        </div>
+
+        <div class="card">
+            <div class="header">
+                <div class="header-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16Z" fill="currentColor"/>
+                    </svg>
+                </div>
+                <h2>Webhook Responses</h2>
+            </div>
+            <div id="responseLog"></div>
+        </div>
     </div>
 
     <script>
@@ -221,8 +434,12 @@
         }
 
         async function sendMessage() {
+            const sendButton = document.getElementById('sendButton');
             const phoneNumber = document.getElementById('phoneNumber').value;
-            const statusDiv = document.getElementById('status');
+            const param1 = document.getElementById('param1').value;
+            const param2 = document.getElementById('param2').value;
+            const param3 = document.getElementById('param3').value;
+            const param4 = document.getElementById('param4').value;
 
             if (!phoneNumber) {
                 showStatus('Please enter a phone number', false);
@@ -230,12 +447,21 @@
             }
 
             try {
+                sendButton.classList.add('loading');
                 const response = await fetch('/send-message', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ phoneNumber }),
+                    body: JSON.stringify({ 
+                        phoneNumber,
+                        parameters: {
+                            param1,
+                            param2,
+                            param3,
+                            param4
+                        }
+                    }),
                 });
 
                 const result = await response.json();
@@ -247,6 +473,8 @@
                 }
             } catch (error) {
                 showStatus('Error sending message: ' + error.message, false);
+            } finally {
+                sendButton.classList.remove('loading');
             }
         }
 
@@ -255,6 +483,10 @@
             statusDiv.textContent = message;
             statusDiv.className = 'status ' + (isSuccess ? 'success' : 'error');
             statusDiv.style.display = 'block';
+
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
         }
 
         // Connect to WebSocket when the page loads
