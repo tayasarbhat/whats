@@ -74,15 +74,52 @@
             border: 1px solid #dee2e6;
         }
         .response-entry {
-            padding: 10px;
-            margin-bottom: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
             background-color: white;
-            border-radius: 4px;
+            border-radius: 8px;
             border: 1px solid #e9ecef;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
         .timestamp {
             color: #6c757d;
             font-size: 0.875rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .message-type {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .type-flow {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+        }
+        .type-text {
+            background-color: #e8f5e9;
+            color: #1b5e20;
+        }
+        .flow-response {
+            background-color: #fafafa;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .flow-item {
+            margin: 5px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .flow-item:last-child {
+            border-bottom: none;
+        }
+        .sender {
+            font-weight: 500;
+            color: #2196f3;
             margin-bottom: 5px;
         }
     </style>
@@ -129,6 +166,29 @@
             };
         }
 
+        function formatFlowResponse(data) {
+            const responseJson = JSON.parse(data.nfm_reply.response_json);
+            let html = '<div class="flow-response">';
+            
+            for (const [key, value] of Object.entries(responseJson)) {
+                if (key !== 'flow_token') {
+                    const readableKey = key
+                        .replace('screen_0_', '')
+                        .replace(/_\d+$/, '')
+                        .replace(/_/g, ' ');
+                    
+                    html += `
+                        <div class="flow-item">
+                            <strong>${readableKey}:</strong> ${value}
+                        </div>
+                    `;
+                }
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
         function addResponseToLog(data) {
             const responseLog = document.getElementById('responseLog');
             const entry = document.createElement('div');
@@ -138,10 +198,23 @@
             timestamp.className = 'timestamp';
             timestamp.textContent = new Date().toLocaleString();
             
-            const content = document.createElement('pre');
-            content.textContent = JSON.stringify(data, null, 2);
+            const typeLabel = document.createElement('div');
+            typeLabel.className = `message-type ${data.type === 'nfm_reply' ? 'type-flow' : 'type-text'}`;
+            typeLabel.textContent = data.type === 'nfm_reply' ? 'Flow Response' : 'Text Message';
+            
+            const content = document.createElement('div');
+            
+            if (data.type === 'nfm_reply') {
+                content.innerHTML = formatFlowResponse(data);
+            } else if (data.type === 'text') {
+                content.innerHTML = `
+                    <div class="sender">From: ${data.from}</div>
+                    <div>${data.text.body}</div>
+                `;
+            }
             
             entry.appendChild(timestamp);
+            entry.appendChild(typeLabel);
             entry.appendChild(content);
             
             responseLog.insertBefore(entry, responseLog.firstChild);
