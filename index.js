@@ -41,7 +41,7 @@ const sendWhatsAppWithFlow = async (recipientNumber) => {
         to: recipientNumber,
         type: 'template',
         template: {
-          name: 'verification',
+          name: 'whatsveri',
           language: {
             code: 'en',
           },
@@ -49,11 +49,11 @@ const sendWhatsAppWithFlow = async (recipientNumber) => {
             {
               type: 'body',
               parameters: [
-                { type: 'text', text: 'Freedom Ultra' },  // {{1}}
-                { type: 'text', text: '120' },             // {{2}}
-                { type: 'text', text: '50' },              // {{3}}
-                { type: 'text', text: '500' },             // {{4}}
-                { type: 'text', text: '2' },               // {{5}}
+                { type: 'text', text: '+971 52 222 1220' },  // {{1}}
+                { type: 'text', text: '250' },             // {{2}}
+                { type: 'text', text: '50 GB Data + 500 Local Minutes.' },              // {{3}}
+                { type: 'text', text: '1' },             // {{4}}
+                
               ],
             },
             {
