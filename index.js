@@ -41,7 +41,7 @@ const sendWhatsAppWithFlow = async (recipientNumber, parameters) => {
         to: recipientNumber,
         type: 'template',
         template: {
-          name: 'whatsveri',
+          name: 'tabws',
           language: {
             code: 'en',
           },
